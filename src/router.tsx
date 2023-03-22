@@ -1,5 +1,4 @@
 import { createBrowserRouter, Link, Outlet } from "react-router-dom";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 import Login from "./pages/Login";
 import Home from "./pages/Home";
@@ -19,19 +18,25 @@ const Navbar = () => (
 
 //ref https://stackoverflow.com/questions/74168742/how-to-template-jsx-with-createbrowserrouter
 //TODO: create header and add header to router
-const HeaderLayout = () => (
-  <>
-    <header>
+const Layout = () => (
+  <Box
+    sx={{
+      width: "100%",
+      height: "100%",
+      backgroundColor: "primary.main",
+    }}
+  >
+    {/* <header>
       <Navbar />
-    </header>
+    </header> */}
     <Outlet />
-  </>
+  </Box>
 );
 
 // ref https://reactrouter.com/en/main/routers/create-browser-router
 const router = createBrowserRouter([
   {
-    element: <HeaderLayout />,
+    element: <Layout />,
     errorElement: <NotFound404 />,
     children: [
       {
