@@ -23,7 +23,7 @@ const Layout = () => (
     sx={{
       width: "100%",
       height: "100%",
-      backgroundColor: "primary.main",
+      // backgroundColor: "primary.main",
     }}
   >
     {/* <header>

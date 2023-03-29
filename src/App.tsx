@@ -6,6 +6,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 import router from "./router";
 import CircularProgress from "@mui/material/CircularProgress";
+import createPalette from "@mui/material/styles/createPalette";
 
 let theme = createTheme({
   palette: {
