@@ -12,7 +12,6 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 
-import { getMovie } from "../../services/Login";
 import { Login } from "../../services/Login";
 
 export default function index() {
@@ -23,7 +22,6 @@ export default function index() {
       email: data.get("email"),
       password: data.get("password"),
     });
-    // getMovie();
     console.log(
       Login({
         email: data.get("email"),
@@ -101,18 +99,22 @@ export default function index() {
           >
             Sign In
           </Button>
-          <Grid container>
-            <Grid item xs>
-              <Link href="#" variant="body2">
-                Forgot password?
-              </Link>
-            </Grid>
-            <Grid item>
-              <Link href="#" variant="body2">
-                {"Don't have an account? Sign Up"}
-              </Link>
-            </Grid>
-          </Grid>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: { xs: "column", sm: "column", md: "row" },
+              justifyContent: "space-between",
+              padding: 0,
+              mt: 1,
+            }}
+          >
+            <Link href="#" variant="body2">
+              Forgot password?
+            </Link>
+            <Link href="#" variant="body2">
+              {"Don't have an account? Sign Up"}
+            </Link>
+          </Box>
         </Box>
       </Box>
     </Container>
