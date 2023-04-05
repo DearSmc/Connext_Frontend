@@ -1,4 +1,5 @@
 import { createBrowserRouter, Link, Outlet } from "react-router-dom";
+// import Alert from "@mui/material/Alert";
 
 import Login from "./pages/Login";
 import Home from "./pages/Home";
@@ -26,6 +27,7 @@ const Layout = () => (
       // backgroundColor: "primary.main",
     }}
   >
+    {/* TODO: add alert here */}
     {/* <header>
       <Navbar />
     </header> */}

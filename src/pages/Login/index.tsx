@@ -1,4 +1,7 @@
 import * as React from "react";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -11,10 +14,16 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+import Alert from "@mui/material/Alert";
 
-import { Login } from "../../services/Login";
+import { AuthApiCall } from "../../services/Auth/auth";
+// import { Login } from "../../services/Auth/auth";
 
 export default function index() {
+  const navigate = useNavigate();
+  const [errMsg, setErrMsg] = useState("");
+  const [isErr, setIsErr] = useState(false);
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -22,17 +31,32 @@ export default function index() {
       email: data.get("email"),
       password: data.get("password"),
     });
-    console.log(
-      Login({
-        email: data.get("email"),
-        password: data.get("password"),
+    // TODO: validate data before submit
+    // if (userCredential.email && userCredential.password) {
+
+    AuthApiCall.login({
+      email: data.get("email"),
+      password: data.get("password"),
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          navigate("/");
+          setErrMsg("");
+          setIsErr(false);
+        }
       })
-    );
+      .catch((res) => {
+        setErrMsg(res.message);
+        setIsErr(true);
+      });
   };
 
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
+      <Alert severity="error" style={!isErr ? { display: "none" } : {}}>
+        {errMsg}
+      </Alert>
       <Box
         sx={{
           marginTop: 8,
@@ -79,10 +103,39 @@ export default function index() {
               },
             }}
           />
-          <FormControlLabel
+          {/* <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
             label="Remember me"
-          />
+          /> */}
+          {/* TODO: Login by facebook &... */}
+          <Box
+            sx={{
+              display: "flex",
+              my: 5,
+            }}
+          >
+            {" "}
+          </Box>
+
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: { xs: "column", sm: "column", md: "row" },
+              justifyContent: "space-between",
+              padding: 0,
+              mt: 1,
+            }}
+          >
+            <Link href="#" variant="body2" underline="hover">
+              Forgot password?
+            </Link>
+            <Typography variant="body2">
+              {"Don’t have an account?"}{" "}
+              <Link href="#" variant="body2" underline="hover">
+                {"Create Account"}
+              </Link>
+            </Typography>
+          </Box>
           <Button
             type="submit"
             fullWidth
@@ -95,26 +148,11 @@ export default function index() {
               borderRadius: "16px",
               color: "white",
               fontWeight: "bold",
+              fontSize: "0.93rem",
             }}
           >
-            Sign In
+            LOGIN
           </Button>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: { xs: "column", sm: "column", md: "row" },
-              justifyContent: "space-between",
-              padding: 0,
-              mt: 1,
-            }}
-          >
-            <Link href="#" variant="body2">
-              Forgot password?
-            </Link>
-            <Link href="#" variant="body2">
-              {"Don't have an account? Sign Up"}
-            </Link>
-          </Box>
         </Box>
       </Box>
     </Container>
