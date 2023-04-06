@@ -1,61 +1,102 @@
-import * as React from "react";
-import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
-import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import Link from "@mui/material/Link";
-import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
+import {
+  CssBaseline,
+  Container,
+  Box,
+  Link,
+  Avatar,
+  Button,
+  TextField,
+  FormControlLabel,
+  Checkbox,
+  Typography,
+  Alert,
+  CircularProgress,
+} from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
-import Alert from "@mui/material/Alert";
 
 import { AuthApiCall } from "../../services/Auth/auth";
-// import { Login } from "../../services/Auth/auth";
+import { IUserCredential } from "../../types/User";
+import { regexValidator } from "../../utils/regexValidator";
 
 export default function index() {
   const navigate = useNavigate();
-  const [errMsg, setErrMsg] = useState("");
-  const [isErr, setIsErr] = useState(false);
+  const [loading, setIsLoading] = useState<boolean>(false);
+  const [alertInfo, setAlertInfo] = useState<IAlertType>({
+    alertMsg: "",
+    showAlert: false,
+    alertType: "error",
+  });
 
+  interface IAlertType {
+    alertMsg: String;
+    showAlert: Boolean;
+    alertType: "error" | "success" | "warning" | "info";
+  }
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
-    // TODO: validate data before submit
-    // if (userCredential.email && userCredential.password) {
+    setIsLoading(true);
 
-    AuthApiCall.login({
+    const data = new FormData(event.currentTarget);
+    // console.log({
+    //   email: data.get("email"),
+    //   password: data.get("password"),
+    // });
+
+    let input = {
       email: data.get("email"),
       password: data.get("password"),
-    })
-      .then((res) => {
-        if (res.status === 200) {
-          navigate("/");
-          setErrMsg("");
-          setIsErr(false);
-        }
-      })
-      .catch((res) => {
-        setErrMsg(res.message);
-        setIsErr(true);
+      // TODO: hash password
+    };
+    if (validateLoginData(input)) {
+      AuthApiCall.login(input)
+        .then((res) => {
+          console.log("res", res);
+          if (res.status === 200) {
+            setAlertInfo({
+              alertMsg: "Login Success",
+              showAlert: true,
+              alertType: "success",
+            });
+            localStorage.setItem("accessToken", res.data.accessToken);
+            navigate("/");
+          } else {
+            setAlertInfo({
+              alertMsg: res.data.message || res,
+              showAlert: true,
+              alertType: "error",
+            });
+          }
+        })
+        .finally(() => setIsLoading(false));
+    } else {
+      setAlertInfo({
+        alertMsg: "Your email or password are incorrect format",
+        showAlert: true,
+        alertType: "error",
       });
+    }
   };
+
+  function validateLoginData({ email, password }: IUserCredential): boolean {
+    if (typeof email === "string" && typeof password === "string") {
+      return regexValidator.email(email) && regexValidator.password(password);
+    }
+    return false;
+  }
+
+  // TODO: implement remember me logic
 
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
-      <Alert severity="error" style={!isErr ? { display: "none" } : {}}>
-        {errMsg}
+      <Alert
+        severity="error"
+        style={!alertInfo.showAlert ? { display: "none" } : {}}
+      >
+        {alertInfo.alertMsg}
       </Alert>
       <Box
         sx={{
@@ -82,11 +123,19 @@ export default function index() {
             name="email"
             autoComplete="email"
             autoFocus
+            inputProps={{ maxLength: 50 }}
             sx={{
               "& fieldset": {
                 borderRadius: "16px",
               },
             }}
+            onChange={() =>
+              setAlertInfo({
+                alertMsg: "",
+                showAlert: false,
+                alertType: "error",
+              })
+            }
           />
           <TextField
             margin="normal"
@@ -97,17 +146,26 @@ export default function index() {
             type="password"
             id="password"
             autoComplete="current-password"
+            inputProps={{ maxLength: 50 }}
             sx={{
               "& fieldset": {
                 borderRadius: "16px",
               },
             }}
+            onChange={() =>
+              setAlertInfo({
+                alertMsg: "",
+                showAlert: false,
+                alertType: "error",
+              })
+            }
           />
-          {/* <FormControlLabel
+          <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
             label="Remember me"
-          /> */}
+          />
           {/* TODO: Login by facebook &... */}
+          {/* TODO: add information button for user when input password */}
           <Box
             sx={{
               display: "flex",
@@ -150,8 +208,13 @@ export default function index() {
               fontWeight: "bold",
               fontSize: "0.93rem",
             }}
+            disabled={loading}
           >
-            LOGIN
+            {loading ? (
+              <CircularProgress color="inherit" size={16} />
+            ) : (
+              <span>LOGIN</span>
+            )}
           </Button>
         </Box>
       </Box>
