@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import bcrypt from "bcrypt";
-
+import { SHA256 } from "crypto-js";
 import {
   CssBaseline,
   Container,
@@ -46,17 +45,14 @@ export default function index() {
     //   password: data.get("password"),
     // });
 
-    // Ref: https://auth0.com/blog/adding-salt-to-hashing-a-better-way-to-store-passwords/
-    // Generate a salt
-    const salt = bcrypt.genSaltSync(10);
-    // Hash the password
-    const hashedPassword = bcrypt.hashSync(data.get("password"), salt);
-
     let input = {
       email: data.get("email"),
-      password: hashedPassword,
+      password: data.get("password"),
     };
+
     if (validateLoginData(input)) {
+      hashPassword(input);
+
       AuthApiCall.login(input)
         .then((res) => {
           console.log("res", res);
@@ -91,6 +87,14 @@ export default function index() {
       return regexValidator.email(email) && regexValidator.password(password);
     }
     return false;
+  }
+
+  function hashPassword(payload: IUserCredential): void {
+    // Generate a salt Hash the password Ref: https://auth0.com/blog/adding-salt-to-hashing-a-better-way-to-store-passwords/
+    if (typeof payload.password === "string") {
+      // Create a hash object with the SHA-256 algorithm
+      payload.password = SHA256(payload.password).toString();
+    }
   }
 
   // TODO: implement remember me logic
