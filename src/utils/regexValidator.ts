@@ -12,6 +12,7 @@ const REGEX_NAME: RegExp = /^[A-Z]{2,50}$/i;
 
 // TODO: complete validate service and create type.ts
 
+// Link (condition): https://docs.google.com/spreadsheets/d/1-nNysbeuW7TwcETpD-qhaH2sUUq7HEduEp8e9Uw1Ndw/edit#gid=1848808472
 const regexValidator = {
   email(email: string): boolean {
     return REGEX_EMAIL.test(email);
