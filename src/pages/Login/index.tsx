@@ -53,26 +53,24 @@ export default function index() {
     if (validateLoginData(input)) {
       hashPassword(input);
 
-      AuthApiCall.login(input)
-        .then((res) => {
-          console.log("res", res);
-          if (res.status === 200) {
-            setAlertInfo({
-              alertMsg: "Login Success",
-              showAlert: true,
-              alertType: "success",
-            });
-            localStorage.setItem("accessToken", res.data.accessToken);
-            navigate("/");
-          } else {
-            setAlertInfo({
-              alertMsg: res.data.message || res,
-              showAlert: true,
-              alertType: "error",
-            });
-          }
-        })
-        .finally(() => setIsLoading(false));
+      AuthApiCall.login(input).then((res) => {
+        console.log("res", res);
+        if (res.status === 200) {
+          setAlertInfo({
+            alertMsg: "Login Success",
+            showAlert: true,
+            alertType: "success",
+          });
+          localStorage.setItem("accessToken", res.data.accessToken);
+          navigate("/");
+        } else {
+          setAlertInfo({
+            alertMsg: res.data.message || res,
+            showAlert: true,
+            alertType: "error",
+          });
+        }
+      });
     } else {
       setAlertInfo({
         alertMsg: "Your email or password are incorrect format",
@@ -80,6 +78,7 @@ export default function index() {
         alertType: "error",
       });
     }
+    setIsLoading(false);
   };
 
   function validateLoginData({ email, password }: IUserCredential): boolean {
@@ -104,15 +103,17 @@ export default function index() {
       <CssBaseline />
       <Alert
         severity="error"
-        style={!alertInfo.showAlert ? { display: "none" } : {}}
+        style={!alertInfo.showAlert ? { visibility: "hidden" } : {}}
+        // TODO: fix position (z-index)
       >
         {alertInfo.alertMsg}
       </Alert>
       <Box
         sx={{
-          marginTop: 8,
+          height: "100vh",
           display: "flex",
           flexDirection: "column",
+          justifyContent: "center",
           alignItems: "center",
         }}
       >
