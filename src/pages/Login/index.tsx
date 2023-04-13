@@ -1,8 +1,7 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { SHA256 } from "crypto-js";
 import {
-  CssBaseline,
   Container,
   Box,
   Link,
@@ -12,7 +11,6 @@ import {
   FormControlLabel,
   Checkbox,
   Typography,
-  Alert,
   CircularProgress,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
@@ -20,21 +18,13 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { AuthApiCall } from "../../services/Auth/auth";
 import { IUserCredential } from "../../types/User";
 import { regexValidator } from "../../utils/regexValidator";
+import { AlertContext } from "../../context/alertContext";
 
 export default function index() {
+  const { handleAlertChange } = useContext(AlertContext);
   const navigate = useNavigate();
   const [loading, setIsLoading] = useState<boolean>(false);
-  const [alertInfo, setAlertInfo] = useState<IAlertType>({
-    alertMsg: "",
-    showAlert: false,
-    alertType: "error",
-  });
 
-  interface IAlertType {
-    alertMsg: String;
-    showAlert: Boolean;
-    alertType: "error" | "success" | "warning" | "info";
-  }
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
@@ -56,26 +46,17 @@ export default function index() {
       AuthApiCall.login(input).then((res) => {
         console.log("res", res);
         if (res.status === 200) {
-          setAlertInfo({
-            alertMsg: "Login Success",
-            showAlert: true,
-            alertType: "success",
-          });
+          handleAlertChange({ type: "success", msg: "Login Success" });
           localStorage.setItem("accessToken", res.data.accessToken);
           navigate("/");
         } else {
-          setAlertInfo({
-            alertMsg: res.data.message || res,
-            showAlert: true,
-            alertType: "error",
-          });
+          handleAlertChange({ type: "error", msg: res.data.message || res });
         }
       });
     } else {
-      setAlertInfo({
-        alertMsg: "Your email or password are incorrect format",
-        showAlert: true,
-        alertType: "error",
+      handleAlertChange({
+        type: "error",
+        msg: "Your email or password are incorrect format",
       });
     }
     setIsLoading(false);
@@ -100,14 +81,6 @@ export default function index() {
 
   return (
     <Container component="main" maxWidth="xs">
-      <CssBaseline />
-      <Alert
-        severity="error"
-        style={!alertInfo.showAlert ? { visibility: "hidden" } : {}}
-        // TODO: fix position (z-index)
-      >
-        {alertInfo.alertMsg}
-      </Alert>
       <Box
         sx={{
           height: "100vh",
@@ -140,13 +113,7 @@ export default function index() {
                 borderRadius: "16px",
               },
             }}
-            onChange={() =>
-              setAlertInfo({
-                alertMsg: "",
-                showAlert: false,
-                alertType: "error",
-              })
-            }
+            onChange={() => handleAlertChange({})}
           />
           <TextField
             margin="normal"
@@ -163,13 +130,7 @@ export default function index() {
                 borderRadius: "16px",
               },
             }}
-            onChange={() =>
-              setAlertInfo({
-                alertMsg: "",
-                showAlert: false,
-                alertType: "error",
-              })
-            }
+            onChange={() => handleAlertChange({})}
           />
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}

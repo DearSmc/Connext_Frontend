@@ -1,5 +1,6 @@
 import { createBrowserRouter, Link, Outlet } from "react-router-dom";
-// import Alert from "@mui/material/Alert";
+import { AlertProvider } from "./context/alertContext";
+import CustomAlert from "./components/CustomAlert";
 
 import Login from "./pages/Login";
 import Home from "./pages/Home";
@@ -20,19 +21,20 @@ const Navbar = () => (
 //ref https://stackoverflow.com/questions/74168742/how-to-template-jsx-with-createbrowserrouter
 //TODO: create header and add header to router
 const Layout = () => (
-  <Box
-    sx={{
-      width: "100%",
-      height: "100%",
-      // backgroundColor: "primary.main",
-    }}
-  >
-    {/* TODO: add alert here */}
-    {/* <header>
-      <Navbar />
-    </header> */}
-    <Outlet />
-  </Box>
+  <AlertProvider>
+    <Box
+      sx={{
+        width: "100%",
+        height: "100%",
+      }}
+    >
+      <CustomAlert />
+      {/* <header>
+        <Navbar />
+      </header> */}
+      <Outlet />
+    </Box>
+  </AlertProvider>
 );
 
 // ref https://reactrouter.com/en/main/routers/create-browser-router
