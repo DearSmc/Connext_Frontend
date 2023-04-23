@@ -10,6 +10,7 @@ export default <T>(config: AxiosRequestConfig): Promise<AxiosResponse<T>> => {
       return response;
     },
     (error) => {
+      // TODO: error can't read status when Backend is DOWN!
       if (
         error.response.status === 401 &&
         error.response.data === "token expire"

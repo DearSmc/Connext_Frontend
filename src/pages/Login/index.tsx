@@ -64,6 +64,12 @@ export default function index() {
 
   function validateLoginData({ email, password }: IUserCredential): boolean {
     if (typeof email === "string" && typeof password === "string") {
+      console.log(
+        email,
+        password,
+        regexValidator.email(email),
+        regexValidator.password(password)
+      );
       return regexValidator.email(email) && regexValidator.password(password);
     }
     return false;
@@ -83,7 +89,7 @@ export default function index() {
     <Container component="main" maxWidth="xs">
       <Box
         sx={{
-          height: "100vh",
+          height: "80vh",
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
@@ -161,7 +167,7 @@ export default function index() {
             </Link>
             <Typography variant="body2">
               {"Don’t have an account?"}{" "}
-              <Link href="#" variant="body2" underline="hover">
+              <Link href="/register" variant="body2" underline="hover">
                 {"Create Account"}
               </Link>
             </Typography>

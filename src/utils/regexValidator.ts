@@ -1,6 +1,6 @@
 const REGEX_EMAIL: RegExp = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
 const REGEX_PASSWORD: RegExp =
-  /(?=.+\d)(?=.+[a-z])(?=.+[A-Z])(?=.*\W){8,50}^[^ ]+$/;
+  /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)[A-Za-z\d]{8,50}$/;
 const REGEX_NAME: RegExp = /^[A-Z]{2,50}$/i;
 
 /**

@@ -1,6 +1,6 @@
 import Alert from "@mui/material/Alert";
-import { useContext  } from "react";
-import { AlertContext } from '../context/alertContext';
+import { useContext } from "react";
+import { AlertContext } from "../context/alertContext";
 
 const CustomAlert = () => {
   const { alertInfo } = useContext(AlertContext);
@@ -12,6 +12,7 @@ const CustomAlert = () => {
       sx={{
         position: "fixed",
         left: "50%",
+        top: "5%",
         transform: "translate(-50%, -50%)",
       }}
     >
@@ -21,10 +22,3 @@ const CustomAlert = () => {
 };
 
 export default CustomAlert;
-
-// How to call function
-//
-// setAlert({ type: "error", msg: "Your email or password are incorrect format" });
-// setAlert({ type: "success", msg: "Login Success" });
-// setAlert({}    => set to default (not show)
-//
