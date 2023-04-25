@@ -191,7 +191,9 @@ export default function index() {
             {loading ? (
               <CircularProgress color="inherit" size={16} />
             ) : (
-              <span>LOGIN</span>
+              <Typography sx={{ fontWeight: "bold", fontSize: "1.1rem" }}>
+                LOGIN
+              </Typography>
             )}
           </Button>
         </Box>
