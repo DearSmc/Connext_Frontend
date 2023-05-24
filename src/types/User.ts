@@ -1,4 +1,5 @@
 import { Dayjs } from "dayjs";
+import { type } from "os";
 export interface IUserCredential {
   email: FormDataEntryValue | null;
   password: FormDataEntryValue | null;
@@ -44,12 +45,19 @@ export interface IUserInfo {
   bornDate: string;
   attention: string[];
   userName: string;
-  userImg:string;
+  userImg: string;
   wallpaperImg: string;
   followers: string[];
   following: string[];
   posts: string[];
   createdAt: string;
   updatedAt: string;
-  __v: 0;
+  __v: number;
+  career: string;
 }
+
+export type SOCIAL_LIST = keyof IUserInfo["socialMedia"];
+
+export const privateAbleKey = ["email", "phone", "website"] as const;
+export type privateAbleKeyType = "email" | "phone" | "website";
+// export type privateAbleKeyType = typeof privateAbleKey;

@@ -1,7 +1,8 @@
 import { AxiosResponse } from "axios";
-import { IUserRegisterInfo, IUserCredential } from "../../types/User";
+import { IUserRegisterInfo, IUserCredential, IUserInfo } from "../../types/User";
 
 export interface IUserApiCall {
-  getUserInfo: (token:string) => Promise<AxiosResponse>;
+  getUserInfo: () => Promise<AxiosResponse>;
+  updateUserInfo: (payload: IUserInfo) => Promise<AxiosResponse>;
 
 }
